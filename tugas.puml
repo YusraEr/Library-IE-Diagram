@@ -1,0 +1,161 @@
+@startuml tugas
+skinparam linetype curved
+entity "Anggota" as anggota {
+    id_anggota : number <PK>
+    --
+    nama : text
+    alamat : text
+    no_telepon : text
+    email : text
+    tgl_bergabung : date
+    jenis_anggota : text
+    status_aktif : boolean
+}
+
+object "Melakukan Peminjaman" as melakukan {
+    id_peminjaman : number <PK>
+    --
+    id_anggota : number <FK>
+    id_pegawai : number <FK>
+}
+
+entity "KartuAnggota" as kartuAnggota {
+    no_kartu : number <PK>
+    --
+    id_anggota : number <FK>
+    --
+    tgl_terbit : date
+    tgl_expired : date
+    status : text
+}
+
+entity "Mahasiswa" as mahasiswa {
+    nim : text
+    jurusan : text
+    fakultas : text
+    semester : number
+}
+
+entity "Dosen" as dosen {
+    nip : text
+    bidang_keahlian : text
+    departemen : text
+}
+
+entity "Peminjaman" as peminjaman {
+    id_peminjaman : number <PK>
+    --
+    id_anggota : number <FK>
+    --
+    tgl_pinjam : date
+    tgl_kembali : date
+    status : text
+}
+
+entity "Buku" as buku {
+    id_buku : number <PK>
+    --
+    isbn : text
+    judul : text
+    penulis : text
+    penerbit : text
+    tahun_terbit : number
+    bahasa : text
+    jumlah_halaman : number
+    deskripsi : text
+}
+
+entity "EksemplarBuku" as eksemplar {
+    id_eksemplar : number <PK>
+    --
+    id_buku : number <FK>
+    --
+    no_barcode : text
+    kondisi : text
+    status : text
+    tgl_pengadaan : date
+}
+
+entity "Kategori" as kategori {
+    id_kategori : number <PK>
+    --
+    jenis_kategori : text
+    deskripsi : text
+}
+
+entity "Rak" as rak {
+    id_rak : number <PK>
+    --
+    lokasi : text
+    nomor_rak : text
+    kapasitas : number
+    kategori_rak : text
+}
+
+entity "Pegawai" as pegawai {
+    id_pegawai : number <PK>
+    --
+    id_supervisor : number <FK>
+    --
+    nama : text
+    jabatan : text
+    departemen : text
+    tgl_bergabung : date
+    status : text
+}
+
+
+' Relationships
+anggota ||--|| kartuAnggota 
+note on link 
+    memiliki
+end note
+
+anggota ||-- melakukan
+melakukan --|{ peminjaman
+melakukan --|| pegawai
+
+mahasiswa |o--|| anggota
+note on link 
+    ISA
+end note
+
+dosen |o--|| anggota
+note on link 
+    ISA
+end note
+
+peminjaman }|--|| buku
+note on link 
+    reservasi
+end note
+
+peminjaman }|--|| buku
+note on link 
+    meminjam
+end note
+
+buku ||--o{ eksemplar
+note on link
+    memiliki
+end note
+
+buku }|--|{ kategori
+note on link
+    termasuk
+end note
+
+buku }|--|{ rak
+note on link
+    ditempatkan
+end note
+
+
+' kategori |o--o{ bukuKategori
+
+pegawai }o--o| pegawai
+note on link
+    unary
+end note
+
+@enduml
